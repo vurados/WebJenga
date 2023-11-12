@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import './App.css'
-import {renderer} from './InitEngine/Init'
-import {scene, camera, controls} from './Logick/index'
-import { JengaBlock } from './Logick/Blocks';
-import * as TWEEN from '@tweenjs/tween.js'
+import {} from './InitEngine/Init'
+import {} from './Logick/index'
 import {} from './Logick/eventListeners'
 
 
@@ -18,25 +16,10 @@ function App() {
   // const defaultY = scene.rotation.y 
   // const defaultZ = scene.rotation.z 
   
-  function render() {
-    requestAnimationFrame( render );
-    TWEEN.update()
-    controls.update()
-    renderer.render( scene, camera );
-  }
-
-  if (!started){
-    console.log("run animate");
-    
-    setStarted(true)
-    render();
-  }
-
-  
   return (
     <>
       {/* <button onClick={rotate}>rotate</button> */}
-      <button onClick={() => console.log(camera.position)}>{play ? 'play' : 'stop'}</button>
+      <button >{play ? 'play' : 'stop'}</button>
       {/* <div id="game-container"></div> */}
     </>
   )

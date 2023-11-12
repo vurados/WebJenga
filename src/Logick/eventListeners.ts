@@ -1,5 +1,6 @@
+import * as THREE from "three";
 import { camera } from ".";
-import { renderer } from "../InitEngine/Init";
+import { renderer, scene } from "../InitEngine/Init";
 import { JengaBlock } from "./Blocks";
 
 
@@ -32,10 +33,37 @@ window.addEventListener('keyup', () => {
   isKeyPressed = false;
 });
 
+
+
+const getBlockOnClick = (event:any) => {
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    console.log(pointer);
+    raycaster.setFromCamera(pointer, camera);
+    const intersects = raycaster.intersectObjects(scene.children);
+    console.log(intersects);
+    
+    if (intersects.length > 0)
+    {
+        const objectId = intersects[0].object.id;
+
+        const block = scene.getObjectById(objectId);
+        console.log('thats block ',block);
+        console.log('scene children', scene.children);
+        
+        
+        scene.remove(block);
+    }
+}
+
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 }, false);
+
+renderer.domElement.addEventListener('click', getBlockOnClick)
 
 export default {}
