@@ -1,6 +1,7 @@
 // import {Block, tower} from './index'
-import {scene} from '../InitEngine/Init'
+import {scene, controls, camera} from '../InitEngine/Init'
 import * as THREE from 'three'
+import { updateCameraPosition } from './Camera'
 
 interface BlockInterface{
     width: number
@@ -23,6 +24,7 @@ export class JengaBlock {
     static ListOfBlocks: {layer:number, place:number, block: THREE.Mesh}[] = []
     static ghostPlacement: boolean
     static lastLayerList: number[]
+
     color:number 
     layer:number
     place:number
@@ -117,13 +119,9 @@ export class JengaBlock {
         //give every block random color
         const blockMaterial = new THREE.MeshBasicMaterial({ color: color }); 
         const block = new THREE.Mesh(blockGeometry, blockMaterial);
+        //add number of block we add on last layer
         JengaBlock.ListOfBlocks.push({layer:JengaBlock.curreentTowerHeight, place:cursor, block:block})
-        if( JengaBlock.lastLayerList.length == JengaBlock.blocksInLayer - 1){
-            JengaBlock.lastLayerList = []
-            JengaBlock.curreentTowerHeight += 1
-        }else{
-            JengaBlock.lastLayerList.push(cursor)
-        }
+        
         block.position.y = JengaBlock.curreentTowerHeight * JengaBlock.height;
         if((JengaBlock.curreentTowerHeight % 2) == 0){
             block.rotation.y = Math.PI / 2  //rotate blocks in even layers by 90 degree
@@ -131,44 +129,22 @@ export class JengaBlock {
         }else{
             block.position.x = (cursor - (JengaBlock.blocksInLayer - 1)/2) * JengaBlock.width
         }
+        if( JengaBlock.lastLayerList.length == JengaBlock.blocksInLayer-1){
+            JengaBlock.lastLayerList = []
+            JengaBlock.curreentTowerHeight += 1
+            const halfTower = JengaBlock.curreentTowerHeight * JengaBlock.height / 2
+            const cameraZposition = (1.6 * (halfTower)) / 0.767 //0.767 is tan(37.5deg) that is half of FOV
+            updateCameraPosition({x:0, y:halfTower, z:cameraZposition}, {x:0, y:halfTower, z:0})
+            // camera.position.set( 0, JengaBlock.curreentTowerHeight * JengaBlock.height / 2, cameraZposition );
+            // const towerCenter = new THREE.Vector3(0, JengaBlock.curreentTowerHeight * JengaBlock.height / 2, 0);
+            // controls.target.copy(towerCenter);
+        }else{
+            JengaBlock.lastLayerList.push(cursor)
+        }
         // add block to the scene
         scene.add(block);
         JengaBlock.ghostPlacement = false
     }
-
-    // removeBlock() {
-    //     const topBlock = scene.children[scene.children.length - 1]; // Assuming blocks are added to the scene
-    //     if (topBlock) {
-    //         scene.remove(topBlock);
-    //         updateTowerHeight(-1);
-    //         updateStability();
-    //     }
-    // }
-
-    // Function to add a block on top of the tower
-    // public static putBlockOnTop() {
-    //     const newBlockGeometry = new THREE.BoxGeometry(JengaBlock.width, JengaBlock.height, JengaBlock.depth);
-    //     const newBlockMaterial = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
-    //     const newBlock = new THREE.Mesh(newBlockGeometry, newBlockMaterial);
-
-    //     // Position the new block on top of the existing tower
-    //     newBlock.position.y = JengaBlock.curreentTowerHeight * JengaBlock.height;
-    //     if((JengaBlock.curreentTowerHeight % 2) == 0){
-    //         newBlock.rotation.y = Math.PI / 2  //rotate blocks in even layers by 90 degree
-    //         newBlock.position.z = (JengaBlock.spaceCursor - (3 - 1)/2) * JengaBlock.width
-    //     }else{
-    //         newBlock.position.x = (JengaBlock.spaceCursor - (3 - 1)/2) * JengaBlock.width
-    //     }
-
-    //     if( JengaBlock.spaceCursor == 2){
-    //         JengaBlock.spaceCursor = 0
-    //         JengaBlock.curreentTowerHeight += 1
-    //     }else{
-    //         JengaBlock.spaceCursor += 1
-    //     }
-    //     // Add the new block to the scene
-    //     scene.add(newBlock);
-    // }
 }
 
 export const ConstructTower = (towerConfig: TowerInterface, blocksConfig: BlockInterface) => {
@@ -178,6 +154,7 @@ export const ConstructTower = (towerConfig: TowerInterface, blocksConfig: BlockI
     }
     return JengaBlock
 }
+
 
 
 

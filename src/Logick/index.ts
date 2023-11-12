@@ -9,21 +9,23 @@ const blockConfig = {
     depth: 3
 }
 // Number of blocks in the tower
-const tower = {
+const towerConfig = {
     height: 10,
     blocksInLayer: 3
 }
 
-const Block = ConstructTower(tower, blockConfig)
+const Block = ConstructTower(towerConfig, blockConfig)
 // setup camera
 controls.rotateSpeed = 0.35;
-controls.maxPolarAngle = Math.PI / 2;
-// Disable rotation around the x and z axes
-// controls.enableRotate = false;
-camera.position.set( 0, tower.height * Block.height / 2, 10 );
-const towerCenter = new THREE.Vector3(0, tower.height * Block.height / 2, 0);
+controls.maxPolarAngle = Math.PI / 2; //Lock camera angles to upper hemisphere
+
+camera.position.set( 0, towerConfig.height * Block.height / 2, 10 );
+const towerCenter = new THREE.Vector3(0, towerConfig.height * Block.height / 2, 0);
 controls.target.copy(towerCenter);
 controls.update();
+
+
+
 
 
 export {scene, camera, controls}
