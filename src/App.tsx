@@ -19,7 +19,7 @@ function App() {
   return (
     <>
       {/* <button onClick={rotate}>rotate</button> */}
-      <button >{play ? 'play' : 'stop'}</button>
+      {/* <button >{play ? 'play' : 'stop'}</button> */}
       {/* <div id="game-container"></div> */}
     </>
   )
