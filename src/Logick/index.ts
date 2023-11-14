@@ -2,16 +2,18 @@ import { scene, camera, controls } from "../InitEngine/Init";
 import { ConstructTower } from "./Blocks";
 import * as THREE from "three";
 
+
+// Number of blocks in the tower
+const towerConfig = {
+  height: 15,
+  blocksInLayer: 3,
+};
+
 // Dimensions of jenga blocks
 const blockConfig = {
   width: 1,
   height: 1,
-  depth: 3,
-};
-// Number of blocks in the tower
-const towerConfig = {
-  height: 10,
-  blocksInLayer: 3,
+  depth: towerConfig.blocksInLayer,
 };
 
 const Block = ConstructTower(towerConfig, blockConfig);

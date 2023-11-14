@@ -1,7 +1,6 @@
-import * as THREE from 'three'
+import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
-import * as TWEEN from '@tweenjs/tween.js'
-import { JengaBlock } from '../Logick/Blocks';
+import * as TWEEN from '@tweenjs/tween.js';
 
 
 const scene = new THREE.Scene();
@@ -15,11 +14,9 @@ const controls = new OrbitControls(camera, renderer.domElement)
 function render() {
     requestAnimationFrame( render );
     TWEEN.update()
-    
-
     controls.update()
     renderer.render( scene, camera );
-  }
+}
 
 render();
 

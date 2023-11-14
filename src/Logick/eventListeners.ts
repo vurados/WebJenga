@@ -38,11 +38,16 @@ const deleteOnIntersection = (event: any) => {
         }
     }
     const intersects = getBlockOnPointer(event)
+    
+
     console.log("🚀 ~ file: eventListeners.ts:27 ~ deleteOnIntersection ~ event.type:", event.type)
 
-
     if (intersects.length > 0){
+        // FIXME: REFACTOR NEEDED
+        if(intersects[0].object.type == 'Points' && intersects[1]){intersects[0] = intersects[1]}
         const objectId = intersects[0].object.id;
+        if(intersects[0].object.type == 'Points'){return}
+
 
         const block = scene.getObjectById(objectId);
         for(const extendedBlock of JengaBlock.ListOfBlocks){
@@ -61,8 +66,10 @@ const highlightOnIntersection = (event: any) => {
     let intersectedObject: null | THREE.Object3D
 
     const intersects = getBlockOnPointer(event)
+    
     const highlightedMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    if (intersects.length > 0) {
+    if (intersects.length > 0 && intersects[0].object) {
+        if(intersects[0].object.type == 'Points' && intersects[1]){intersects[0] = intersects[1]}
         intersectedObject = intersects[0].object
         JengaBlock.ListOfBlocks.forEach((blocks) => {
             const object = blocks.block

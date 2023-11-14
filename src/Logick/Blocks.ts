@@ -22,7 +22,7 @@ export interface ListOfBlocksInterface {
 
 export class JengaBlock {
     static curreentTowerHeight:number
-    static spaceCursor:number //Empty space where next block go
+    static spaceCursor:number //Empty space where next block will be palced
     static width: number
     static height: number
     static depth: number
@@ -56,7 +56,7 @@ export class JengaBlock {
         const blockMaterial = new THREE.MeshBasicMaterial({ color: this.color }); 
         const block = new THREE.Mesh(blockGeometry, blockMaterial);
         JengaBlock.ListOfBlocks.push({inTower: true, layer:this.layer, place:this.place, block:block, material:blockMaterial})
-        if( JengaBlock.spaceCursor == 2){
+        if( JengaBlock.spaceCursor == JengaBlock.blocksInLayer - 1){
             JengaBlock.spaceCursor = 0
             JengaBlock.curreentTowerHeight += 1
         }else{
@@ -77,21 +77,24 @@ export class JengaBlock {
         scene.add(block);
     }
 
-    getAllSceneBlocks(){
+    getAllSceneObjects(){
         const blocks = scene.children
         return blocks
     }
 
-    getAllBlockInstances(){
+    getAllBlockExtebdedInstances(){
         return JengaBlock.ListOfBlocks
     }
 
+    // method puts opaque block on top of the tower
     public static putGhostBlock(cursor: number){
-        console.info('ghost placemnt', JengaBlock.ghostPlacement);
-        
+        console.log('ghost placemnt', JengaBlock.ghostPlacement);
+        // before placing block we check if there is already placed ghost block with ghostPlacement flag, if so, remove that block
         if(JengaBlock.ghostPlacement){JengaBlock.removeLastBlock()}
+        // check if there is real block on place we trying to place ghost block 
         if(JengaBlock.lastLayerList.includes(cursor)) {console.log('cursor in lastlayerlist', cursor, JengaBlock.lastLayerList);return;}
         
+
         const ghostBlockGeometry = new THREE.BoxGeometry(JengaBlock.width, JengaBlock.height, JengaBlock.depth);
         const ghostBlockMaterial = new THREE.MeshBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.5 });
         const ghostBlock = new THREE.Mesh(ghostBlockGeometry, ghostBlockMaterial);
@@ -120,16 +123,21 @@ export class JengaBlock {
         JengaBlock.ghostPlacement = false
     }
 
+    // this method put real block on the place of ghostBlock
     public static addOnCursor(cursor: number){
         if(JengaBlock.lastLayerList.includes(cursor)) return //if user tries to put block on existing block on last layer
-        const color = Math.random() * 0xffffff
+
+        // create block mesh
         const blockGeometry = new THREE.BoxGeometry(JengaBlock.width, JengaBlock.height, JengaBlock.depth);
         //give every block random color
+        const color = Math.random() * 0xffffff
         const blockMaterial = new THREE.MeshBasicMaterial({ color: color }); 
         const block = new THREE.Mesh(blockGeometry, blockMaterial);
-        //add number of block we add on last layer
+
+        //add block in static class variable 
         JengaBlock.ListOfBlocks.push({inTower:true, layer:JengaBlock.curreentTowerHeight, place:cursor, block:block, material: blockMaterial})
         
+        // position the block
         block.position.y = JengaBlock.curreentTowerHeight * JengaBlock.height;
         if((JengaBlock.curreentTowerHeight % 2) == 0){
             block.rotation.y = Math.PI / 2  //rotate blocks in even layers by 90 degree
@@ -137,6 +145,8 @@ export class JengaBlock {
         }else{
             block.position.x = (cursor - (JengaBlock.blocksInLayer - 1)/2) * JengaBlock.width
         }
+        
+        // if the block that we setting is the last possible block in the layer, we emptying the last layer list 
         if( JengaBlock.lastLayerList.length == JengaBlock.blocksInLayer-1){
             JengaBlock.lastLayerList = []
             JengaBlock.curreentTowerHeight += 1
