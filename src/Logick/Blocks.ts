@@ -77,12 +77,12 @@ export class JengaBlock {
         scene.add(block);
     }
 
-    getAllSceneObjects(){
+    public static getAllSceneObjects(){
         const blocks = scene.children
         return blocks
     }
 
-    getAllBlockExtebdedInstances(){
+    public static getAllBlockExtebdedInstances(){
         return JengaBlock.ListOfBlocks
     }
 

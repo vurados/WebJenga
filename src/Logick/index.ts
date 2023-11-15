@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 // Number of blocks in the tower
 const towerConfig = {
-  height: 15,
+  height: 10,
   blocksInLayer: 3,
 };
 
