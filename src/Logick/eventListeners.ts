@@ -3,6 +3,7 @@ import { camera } from ".";
 import { renderer, scene } from "../InitEngine/Init";
 import { JengaBlock } from "./Blocks";
 import { Tower } from "./towerLogick";
+import { isIntersectsBlock } from "./helperMethods";
 
 
 let isKeyPressed = false
@@ -11,7 +12,7 @@ let startMouseX = 0;
 let startMouseY = 0;
 // export let stillOn: boolean = false
 
-// function that deletes block that was clicked
+
 const getBlockOnPointer = (event:any) => {
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
@@ -23,7 +24,7 @@ const getBlockOnPointer = (event:any) => {
     
     return intersects
 }
-
+// function that deletes block that was clicked
 const deleteOnIntersection = (event: any) => {
     if(event.type == 'mousedown'){
         startMouseX = event.clientX;
@@ -42,13 +43,10 @@ const deleteOnIntersection = (event: any) => {
 
     console.log("🚀 ~ file: eventListeners.ts:27 ~ deleteOnIntersection ~ event.type:", event.type)
 
-    if (intersects.length > 0){
-        // FIXME: REFACTOR NEEDED
-        if(intersects[0].object.type == 'Points' && intersects[1]){intersects[0] = intersects[1]}
-        const objectId = intersects[0].object.id;
-        if(intersects[0].object.type == 'Points'){return}
-
-
+    const intersectedBlock = isIntersectsBlock(intersects)
+    
+    if (intersectedBlock !== null) {
+        const objectId = intersectedBlock.id;
         const block = scene.getObjectById(objectId);
         for(const extendedBlock of JengaBlock.ListOfBlocks){
             if(extendedBlock.block.id == objectId){
@@ -63,38 +61,29 @@ const deleteOnIntersection = (event: any) => {
 }
 
 const highlightOnIntersection = (event: any) => {
-    let intersectedObject: null | THREE.Object3D
+    // let intersectedObject: null | THREE.Object3D
 
     const intersects = getBlockOnPointer(event)
     
     const highlightedMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    if (intersects.length > 0 && intersects[0].object) {
-        if(intersects[0].object.type == 'Points' && intersects[1]){intersects[0] = intersects[1]}
-        intersectedObject = intersects[0].object
+    const intersectedBlock = isIntersectsBlock(intersects)
+    
+    if (intersectedBlock !== null) {
         JengaBlock.ListOfBlocks.forEach((blocks) => {
             const object = blocks.block
-            if (object.id == intersectedObject.id ){
+            if (object.id == intersectedBlock.id ){
                 object.material = highlightedMaterial
             }else{
                 object.material = blocks.material
             }
         })
-    } else {
-        intersectedObject = null
-    }
-    
-
-    if (intersects.length > 0){
-        const object = intersects[0].object;
-        if (object instanceof THREE.Mesh) {
-            object.material = highlightedMaterial;
-        }
     }else{
         JengaBlock.ListOfBlocks.forEach((block) => {
             if(block.block.material != block.material){
                 block.block.material = block.material
             }
         })
+        return
     }
 }
 

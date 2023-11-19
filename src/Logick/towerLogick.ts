@@ -15,7 +15,7 @@ export class Tower {
         
         for(let i = listOfBlocks.length-1; i >= 0; i--){
             const element = listOfBlocks[i]
-            
+            // TODO: iterative check of every layer(maybe block) stability
             if(element.inTower){
                 console.log("element.layer, element.place ",element.layer, element.place);
                 
@@ -36,8 +36,7 @@ export class Tower {
             }
         }
 
-        Tower.calculateSupportArea(0, listOfSupportArea)
-
+        // calculate center of mass 
         const centerOfMass = new THREE.Vector3();
         for (const center of listOfCenters){
             centerOfMass.add(center);
@@ -63,7 +62,8 @@ export class Tower {
             Tower.centerMassDot = new THREE.Points(dotGeometry, dotMaterial);
             Tower.centerMassDot.position.set(centerOfMass.x, centerOfMass.y, centerOfMass.z)
             Tower.centerMassDot.renderOrder = 999
-            Tower.centerMassDot.material.depthTest = false
+            // TODO: uncomment this
+            // Tower.centerMassDot.material.depthTest = false
             scene.add(Tower.centerMassDot);
         }else{
             Tower.centerMassDot.position.set(centerOfMass.x, centerOfMass.y, centerOfMass.z)
@@ -106,7 +106,8 @@ export class Tower {
             const baseMaterial = new THREE.MeshBasicMaterial( { color: 0x888888} );
             Tower.baseMesh = new THREE.Mesh( geometry, baseMaterial );
             Tower.baseMesh.renderOrder = 999
-            Tower.baseMesh.material.depthTest = false
+            // TODO: uncomment this
+            // Tower.baseMesh.material.depthTest = false
             Tower.baseMesh.rotation.x = Math.PI / 2
             Tower.baseMesh.position.y = -(JengaBlock.height / 2)
             scene.add(Tower.baseMesh);

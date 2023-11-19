@@ -1,5 +1,5 @@
 // import {Block, tower} from './index'
-import {scene, controls, camera} from '../InitEngine/Init'
+import {scene} from '../InitEngine/Init'
 import * as THREE from 'three'
 import { updateCameraPosition } from './Camera'
 
@@ -98,6 +98,7 @@ export class JengaBlock {
         const ghostBlockGeometry = new THREE.BoxGeometry(JengaBlock.width, JengaBlock.height, JengaBlock.depth);
         const ghostBlockMaterial = new THREE.MeshBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.5 });
         const ghostBlock = new THREE.Mesh(ghostBlockGeometry, ghostBlockMaterial);
+        ghostBlock.name = 'ghost'
     
         const ghostBlockLayer = JengaBlock.curreentTowerHeight;
         const ghostBlockPlace = cursor
